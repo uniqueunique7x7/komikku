@@ -198,6 +198,7 @@ private fun UpdatesUiItem(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
             )
+            .height(if (isLeader) 66.dp else 66.dp)
             .padding(
                 // KMK -->
                 vertical = MaterialTheme.padding.extraSmall,
@@ -215,8 +216,7 @@ private fun UpdatesUiItem(
             if (usePanoramaCover && coverIsWide) {
                 MangaCover.Panorama(
                     modifier = Modifier
-                        .padding(top = MaterialTheme.padding.small)
-                        .width(UpdateItemPanoramaWidth),
+                        .padding(vertical = 2.dp),
                     data = mangaCover,
                     onClick = onClickCover,
                     // KMK -->
@@ -234,8 +234,7 @@ private fun UpdatesUiItem(
                 MangaCover.Book(
                     modifier = Modifier
                         // KMK -->
-                        .padding(top = MaterialTheme.padding.small)
-                        .width(UpdateItemWidth),
+                        .padding(vertical = 1.dp),
                     // KMK <--
                     data = mangaCover,
                     onClick = onClickCover,
@@ -250,11 +249,23 @@ private fun UpdatesUiItem(
                 )
             }
         } else {
-            Box(
-                modifier = Modifier
-                    .width(if (usePanoramaCover && coverIsWide) UpdateItemPanoramaWidth else UpdateItemWidth),
-            )
             // KMK <--
+            MangaCover.Book(
+                modifier = Modifier
+                    // KMK -->
+                    .padding(vertical = 1.dp),
+                // KMK <--
+                data = mangaCover,
+                onClick = onClickCover,
+                // KMK -->
+                bgColor = bgColor,
+                tint = onBgColor,
+                size = MangaCover.Size.Medium,
+                onCoverLoaded = { _, result ->
+                    val image = result.result.image
+                    coverRatio.floatValue = image.height.toFloat() / image.width
+                },
+            )
         }
 
         Column(
@@ -277,7 +288,7 @@ private fun UpdatesUiItem(
                         imageVector = Icons.Filled.Circle,
                         contentDescription = stringResource(MR.strings.unread),
                         modifier = Modifier
-                            .height(8.dp)
+                            .height(7.dp)
                             .padding(end = 4.dp),
                         tint = MaterialTheme.colorScheme.primary,
                     )
