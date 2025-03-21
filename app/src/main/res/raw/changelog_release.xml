@@ -1,22 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
-    <changelogversion versionName="1.13.0" changeDate="February 01, 2025">
-        <changelogtext>[b]New:[/b] feat: unify recommendation screens and add more sources</changelogtext>
-        <changelogtext>[b]New:[/b] built-in EH compatible with extension</changelogtext>
+    <changelogversion versionName="1.13.0" changeDate="March 08, 2025">
+        <changelogtext>[b]New:[/b] feat: unify recommendation screens combine MAL, AniList, MangaUpdates, MangaDex, Comick</changelogtext>
+        <changelogtext>[b]New:[/b] Support for private tracking with AniList, Bangumi, Kitsu</changelogtext>
         <changelogtext>[b]New:[/b] Notification rich info</changelogtext>
         <changelogtext>[b]New:[/b] Drag to reorder feeds</changelogtext>
+        <changelogtext>[b]New:[/b] Hide excluded scanlators from Update view</changelogtext>
+        <changelogtext>[b]New:[/b] Built-in EH compatible with extension</changelogtext>
         <changelogtext>[b]New:[/b] Add option to enable incognito mode per extension</changelogtext>
-        <changelogtext>[b]New:[/b] feat: add global search shortcut to SmartSearch</changelogtext>
-        <changelogtext>[b]Improve:[/b] update website link</changelogtext>
-        <changelogtext>[b]Improve:[/b] add webview to Extension detail screen</changelogtext>
+        <changelogtext>[b]New:[/b] Add button to favorite manga from history screen</changelogtext>
+        <changelogtext>[b]New:[/b] Use COMPLETE category when sync finishes</changelogtext>
+        <changelogtext>[b]New:[/b] Display staff information on Anilist tracker search results</changelogtext>
+        <changelogtext>[b]New:[/b] Implement vertical page panning in paged reader mode when using hardware keys</changelogtext>
+        <changelogtext>[b]New:[/b] Add global search shortcut to SmartSearch</changelogtext>
+        <changelogtext>[b]New:[/b] Add option to export minimal library information to a CSV file</changelogtext>
+        <changelogtext>[b]New:[/b] Add "Monochrome" theme</changelogtext>
+        <changelogtext>[b]Improve:[/b] (EditMergedSettings): Allow open merge children manga</changelogtext>
+        <changelogtext>[b]Improve:[/b] Apply "Downloaded only" filter to all entries regardless of favourite status</changelogtext>
+        <changelogtext>[b]Improve:[/b] Remove alphabetical category/feed sort option</changelogtext>
         <changelogtext>[b]Improve:[/b] Restore chapter's bookmark &amp; oldest dateUpload from backup</changelogtext>
-        <changelogtext>[b]Improve:[/b] Update Bangumi</changelogtext>
+        <changelogtext>[b]Improve:[/b] Migrate to Bangumi's newer v0 API</changelogtext>
+        <changelogtext>[b]Improve:[/b] Priority manga update list</changelogtext>
+        <changelogtext>[b]Improve:[/b] Ignore hidden files/folders for Local Source chapter list</changelogtext>
+        <changelogtext>[b]Improve:[/b] add webview to Extension detail screen</changelogtext>
+        <changelogtext>[b]Improve:[/b] Rework slider UI</changelogtext>
+        <changelogtext>[b]Improve:[/b] Improve support for drag-and-drop category reordering</changelogtext>
+        <changelogtext>[b]Improve:[/b] Change label of setting to always use SSIV in long strip reader</changelogtext>
+        <changelogtext>[b]Improve:[/b] Bump default user agent</changelogtext>
+        <changelogtext>[b]Improve:[/b] Description showing which sources support batch-add</changelogtext>
+        <changelogtext>[b]Improve:[/b] Spoof or remove `X-Requested-With` header from webview</changelogtext>
+        <changelogtext>[b]Improve:[/b] update website link</changelogtext>
+        <changelogtext>[b]Fix:[/b] Infinix, Xiaomi webview</changelogtext>
+        <changelogtext>[b]Fix:[/b] App's preferences referencing deleted categories</changelogtext>
+        <changelogtext>[b]Fix:[/b] Bangumi login regression</changelogtext>
+        <changelogtext>[b]Fix:[/b] Migrate filter Obsolete was showing E-H/ExH source</changelogtext>
+        <changelogtext>[b]Fix:[/b] don't expand manga description if it's favorited</changelogtext>
         <changelogtext>[b]Fix:[/b] custom theme color in various AndroidView</changelogtext>
         <changelogtext>[b]Fix:[/b] Mangadex fix alt title being removed by cleanDescription</changelogtext>
         <changelogtext>[b]Fix:[/b] was not showing entry after importing entry with deep-link</changelogtext>
         <changelogtext>[b]Fix:[/b] add entry to favorite when importing via deep-link</changelogtext>
+        <changelogtext>[b]Fix:[/b] (PreferenceRestorer): correctly backup/restore preferences related to category</changelogtext>
+        <changelogtext>[b]Fix:[/b] (MangaRestorer): avoid chapter's order mixed up when backup restore/sync</changelogtext>
+        <changelogtext>[b]Fix:[/b] (BackupRestorer): avoid issue of late restoring categories</changelogtext>
+        <changelogtext>[b]Fix:[/b] (MangaRestorer): avoid exception caused by duplicate entries</changelogtext>
         <changelogtext>[b]Fix:[/b] (myanimelist): Fix nullability and fallback to medium cover if large cover is null</changelogtext>
+        <changelogtext>[b]Fix:[/b] MAL tracker losing track of login expiration</changelogtext>
+        <changelogtext>[b]Fix:[/b] Bangumi tracker losing track of login expiration</changelogtext>
         <changelogtext>[b]Fix:[/b] (download): Making sure archive tmp file is created properly</changelogtext>
+        <changelogtext>[b]Fix:[/b] delegate nhentai failed to load cover</changelogtext>
+        <changelogtext>[b]Fix:[/b] Attempt to fix crash when migrating or removing entries from library</changelogtext>
+        <changelogtext>[b]Fix:[/b] fill info from trackers only looking for specific 'Art' or 'Story'</changelogtext>
+        <changelogtext>[b]Fix:[/b] an issue where tracker reading progress is changed to a lower value</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="1.12.6" changeDate="February 14, 2025">
+        <changelogtext>[b]Fix:[/b] crash due to extensions destructuring MangasPage</changelogtext>
     </changelogversion>
     <changelogversion versionName="1.12.4" changeDate="February 01, 2025">
         <changelogtext>[b]New:[/b] Remove extensions repo</changelogtext>
@@ -100,7 +137,7 @@
         <changelogtext>[b]New:[/b] Use language flags</changelogtext>
         <changelogtext>[b]New:[/b] Bulk-merging multiple library entries</changelogtext>
         <changelogtext>[b]New:[/b] Ability to enable/disable repo</changelogtext>
-        <changelogtext>[b]New:[/b] Show repo icon for Komikku &amp; Keiyoushi</changelogtext>
+        <changelogtext>[b]New:[/b] Show repo icon for Repo</changelogtext>
         <changelogtext>[b]New:[/b] Custom themes</changelogtext>
         <changelogtext>[b]New:[/b] Allow sync Feeds &amp; extension-repo settings</changelogtext>
         <changelogtext>[b]New:[/b] Add 'show entry' action to download notifications</changelogtext>

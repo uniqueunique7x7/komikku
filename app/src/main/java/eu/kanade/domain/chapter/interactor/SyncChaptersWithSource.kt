@@ -10,6 +10,7 @@ import eu.kanade.tachiyomi.data.download.DownloadProvider
 import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.online.HttpSource
+import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import exh.source.isEhBasedManga
 import tachiyomi.data.chapter.ChapterSanitizer
 import tachiyomi.domain.chapter.interactor.GetChaptersByMangaId
@@ -35,6 +36,7 @@ class SyncChaptersWithSource(
     private val updateChapter: UpdateChapter,
     private val getChaptersByMangaId: GetChaptersByMangaId,
     private val getExcludedScanlators: GetExcludedScanlators,
+    private val readerPreferences: ReaderPreferences,
 ) {
 
     /**
@@ -153,11 +155,17 @@ class SyncChaptersWithSource(
             return emptyList()
         }
 
-        val reAdded = mutableListOf<Chapter>()
+        val changedOrDuplicateReadUrls = mutableSetOf<String>()
 
         val deletedChapterNumbers = TreeSet<Double>()
         val deletedReadChapterNumbers = TreeSet<Double>()
         val deletedBookmarkedChapterNumbers = TreeSet<Double>()
+
+        val readChapterNumbers = dbChapters
+            .asSequence()
+            .filter { it.read && it.isRecognizedNumber }
+            .map { it.chapterNumber }
+            .toSet()
 
         removedChapters.forEach { chapter ->
             if (chapter.read) deletedReadChapterNumbers.add(chapter.chapterNumber)
@@ -168,11 +176,18 @@ class SyncChaptersWithSource(
         val deletedChapterNumberDateFetchMap = removedChapters.sortedByDescending { it.dateFetch }
             .associate { it.chapterNumber to it.dateFetch }
 
+        val markDuplicateAsRead = readerPreferences.markDuplicateReadChapterAsRead().get()
+
         // Date fetch is set in such a way that the upper ones will have bigger value than the lower ones
         // Sources MUST return the chapters from most to less recent, which is common.
         var itemCount = newChapters.size
         var updatedToAdd = newChapters.map { toAddItem ->
             var chapter = toAddItem.copy(dateFetch = nowMillis + itemCount--)
+
+            if (chapter.chapterNumber in readChapterNumbers && markDuplicateAsRead) {
+                changedOrDuplicateReadUrls.add(chapter.url)
+                chapter = chapter.copy(read = true)
+            }
 
             if (!chapter.isRecognizedNumber || chapter.chapterNumber !in deletedChapterNumbers) return@map chapter
 
@@ -186,19 +201,19 @@ class SyncChaptersWithSource(
                 chapter = chapter.copy(dateFetch = it)
             }
 
-            reAdded.add(chapter)
+            changedOrDuplicateReadUrls.add(chapter.url)
 
             chapter
         }
 
         // --> EXH (carry over reading progress)
         if (manga.isEhBasedManga()) {
-            val finalAdded = updatedToAdd.subtract(reAdded)
-            if (finalAdded.isNotEmpty()) {
+            val hasNewChapters = updatedToAdd.any { it.url !in changedOrDuplicateReadUrls }
+            if (hasNewChapters) {
                 val max = dbChapters.maxOfOrNull { it.lastPageRead }
                 if (max != null && max > 0) {
                     updatedToAdd = updatedToAdd.map {
-                        if (it !in reAdded) {
+                        if (it.url !in changedOrDuplicateReadUrls) {
                             it.copy(lastPageRead = max)
                         } else {
                             it
@@ -228,12 +243,8 @@ class SyncChaptersWithSource(
         // Note that last_update actually represents last time the chapter list changed at all
         updateManga.awaitUpdateLastUpdate(manga.id)
 
-        val reAddedUrls = reAdded.map { it.url }.toHashSet()
-
         val excludedScanlators = getExcludedScanlators.await(manga.id).toHashSet()
 
-        return updatedToAdd.filterNot {
-            it.url in reAddedUrls || it.scanlator in excludedScanlators
-        }
+        return updatedToAdd.filterNot { it.url in changedOrDuplicateReadUrls || it.scanlator in excludedScanlators }
     }
 }

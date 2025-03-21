@@ -4,6 +4,7 @@ import android.graphics.Color
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.track.Tracker
+import eu.kanade.tachiyomi.data.track.model.TrackMangaMetadata
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -17,6 +18,7 @@ data class DummyTracker(
     override val id: Long,
     override val name: String,
     override val supportsReadingDates: Boolean = false,
+    override val supportsPrivateTracking: Boolean = false,
     override val isLoggedIn: Boolean = false,
     override val isLoggedInFlow: Flow<Boolean> = flowOf(false),
     val valLogoColor: Int = Color.rgb(18, 25, 35),
@@ -120,11 +122,16 @@ data class DummyTracker(
         epochMillis: Long,
     ) = Unit
 
+    override suspend fun setRemotePrivate(
+        track: eu.kanade.tachiyomi.data.database.models.Track,
+        private: Boolean,
+    ) = Unit
+
+    // SY -->
     override suspend fun getMangaMetadata(
-        track: tachiyomi.domain.track.model.Track,
-    ): eu.kanade.tachiyomi.data.track.model.TrackMangaMetadata = eu.kanade.tachiyomi.data.track.model.TrackMangaMetadata(
-        0, "test", "test", "test", "test", "test",
-    )
+        track: Track,
+    ): TrackMangaMetadata = TrackMangaMetadata(0, "test", "test", "test", "test", "test")
+    // SY <--
 
     // KMK -->
     override fun hasNotStartedReading(status: Long): Boolean = status == 2L

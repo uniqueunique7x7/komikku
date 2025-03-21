@@ -19,6 +19,7 @@ import eu.kanade.domain.sync.SyncPreferences
 import eu.kanade.domain.track.interactor.TrackChapter
 import eu.kanade.domain.track.service.TrackPreferences
 import eu.kanade.domain.ui.UiPreferences
+import eu.kanade.tachiyomi.data.database.models.isRecognizedNumber
 import eu.kanade.tachiyomi.data.database.models.toDomainChapter
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.DownloadProvider
@@ -370,7 +371,7 @@ class ReaderViewModel @JvmOverloads constructor(
                     mutableState.update {
                         it.copy(
                             manga = manga,
-                            /* SY --> */
+                            // SY -->
                             meta = metadata,
                             mergedManga = mergedManga,
                             dateRelativeTime = relativeTime,
@@ -380,7 +381,7 @@ class ReaderViewModel @JvmOverloads constructor(
                                 autoScrollFreq.toString()
                             },
                             isAutoScrollEnabled = autoScrollFreq != -1f,
-                            /* SY <-- */
+                            // SY <--
                         )
                     }
                     if (chapterId == -1L) chapterId = initialChapterId
@@ -392,17 +393,21 @@ class ReaderViewModel @JvmOverloads constructor(
                         downloadManager = downloadManager,
                         downloadProvider = downloadProvider,
                         manga = manga,
-                        source = source, /* SY --> */
+                        source = source,
+                        // SY -->
                         sourceManager = sourceManager,
                         readerPrefs = readerPreferences,
                         mergedReferences = mergedReferences,
-                        mergedManga = mergedManga, /* SY <-- */
+                        mergedManga = mergedManga,
+                        // SY <--
                     )
 
                     loadChapter(
                         loader!!,
                         chapterList.first { chapterId == it.chapter.id },
-                        /* SY --> */page, /* SY <-- */
+                        // SY -->
+                        page,
+                        // SY <--
                     )
                     Result.success(true)
                 } else {
@@ -538,7 +543,9 @@ class ReaderViewModel @JvmOverloads constructor(
             val isDownloaded = downloadManager.isChapterDownloaded(
                 dbChapter.name,
                 dbChapter.scanlator,
-                /* SY --> */ manga.ogTitle /* SY <-- */,
+                // SY -->
+                manga.ogTitle,
+                // SY <--
                 manga.source,
                 skipCache = true,
             )
@@ -677,8 +684,10 @@ class ReaderViewModel @JvmOverloads constructor(
      */
     private suspend fun updateChapterProgress(
         readerChapter: ReaderChapter,
-        page: Page/* SY --> */,
-        hasExtraPage: Boolean, /* SY <-- */
+        page: Page,
+        // SY -->
+        hasExtraPage: Boolean,
+        // SY <--
     ) {
         val pageIndex = page.index
         val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
@@ -738,6 +747,21 @@ class ReaderViewModel @JvmOverloads constructor(
                 // SY <--
                 updateTrackChapterRead(readerChapter)
                 deleteChapterIfNeeded(readerChapter)
+
+                val duplicateUnreadChapters = chapterList
+                    .mapNotNull {
+                        val chapter = it.chapter
+                        if (
+                            !chapter.read &&
+                            chapter.isRecognizedNumber &&
+                            chapter.chapter_number == readerChapter.chapter.chapter_number
+                        ) {
+                            ChapterUpdate(id = chapter.id!!, read = true)
+                        } else {
+                            null
+                        }
+                    }
+                updateChapter.awaitAll(duplicateUnreadChapters)
 
                 // Check if syncing is enabled for chapter read:
                 if (isSyncEnabled && syncTriggerOpt.syncOnChapterRead) {
@@ -1378,8 +1402,10 @@ class ReaderViewModel @JvmOverloads constructor(
         // SY <--
 
         data class PageActions(
-            val page: ReaderPage/* SY --> */,
-            val extraPage: ReaderPage? = null, /* SY <-- */
+            val page: ReaderPage,
+            // SY -->
+            val extraPage: ReaderPage? = null,
+            // SY <--
         ) : Dialog
 
         // SY -->
@@ -1398,8 +1424,10 @@ class ReaderViewModel @JvmOverloads constructor(
         data class SavedImage(val result: SaveImageResult) : Event
         data class ShareImage(
             val uri: Uri,
-            val page: ReaderPage/* SY --> */,
-            val secondPage: ReaderPage? = null, /* SY <-- */
+            val page: ReaderPage,
+            // SY -->
+            val secondPage: ReaderPage? = null,
+            // SY <--
         ) : Event
         data class CopyImage(val uri: Uri) : Event
     }
