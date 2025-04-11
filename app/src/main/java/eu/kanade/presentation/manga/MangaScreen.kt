@@ -170,6 +170,7 @@ fun MangaScreen(
     onEditCategoryClicked: (() -> Unit)?,
     onEditFetchIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
+    onEditNotesClicked: () -> Unit,
     // SY -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
@@ -198,6 +199,7 @@ fun MangaScreen(
 
     // KMK -->
     getMangaState: @Composable (Manga) -> State<Manga>,
+    onClickSourceSettingsClicked: (() -> Unit)?,
     onRelatedMangasScreenClick: () -> Unit,
     onRelatedMangaClick: (Manga) -> Unit,
     onRelatedMangaLongClick: (Manga) -> Unit,
@@ -242,6 +244,7 @@ fun MangaScreen(
             onEditCategoryClicked = onEditCategoryClicked,
             onEditIntervalClicked = onEditFetchIntervalClicked,
             onMigrateClicked = onMigrateClicked,
+            onEditNotesClicked = onEditNotesClicked,
             // SY -->
             onMetadataViewerClicked = onMetadataViewerClicked,
             onEditInfoClicked = onEditInfoClicked,
@@ -263,6 +266,7 @@ fun MangaScreen(
             onInvertSelection = onInvertSelection,
             // KMK -->
             getMangaState = getMangaState,
+            onClickSourceSettingsClicked = onClickSourceSettingsClicked,
             onRelatedMangasScreenClick = onRelatedMangasScreenClick,
             onRelatedMangaClick = onRelatedMangaClick,
             onRelatedMangaLongClick = onRelatedMangaLongClick,
@@ -300,6 +304,7 @@ fun MangaScreen(
             onEditCategoryClicked = onEditCategoryClicked,
             onEditIntervalClicked = onEditFetchIntervalClicked,
             onMigrateClicked = onMigrateClicked,
+            onEditNotesClicked = onEditNotesClicked,
             // SY -->
             onMetadataViewerClicked = onMetadataViewerClicked,
             onEditInfoClicked = onEditInfoClicked,
@@ -321,6 +326,7 @@ fun MangaScreen(
             onInvertSelection = onInvertSelection,
             // KMK -->
             getMangaState = getMangaState,
+            onClickSourceSettingsClicked = onClickSourceSettingsClicked,
             onRelatedMangasScreenClick = onRelatedMangasScreenClick,
             onRelatedMangaClick = onRelatedMangaClick,
             onRelatedMangaLongClick = onRelatedMangaLongClick,
@@ -368,6 +374,7 @@ private fun MangaScreenSmallImpl(
     onEditCategoryClicked: (() -> Unit)?,
     onEditIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
+    onEditNotesClicked: () -> Unit,
     // SY -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
@@ -396,6 +403,7 @@ private fun MangaScreenSmallImpl(
 
     // KMK -->
     getMangaState: @Composable ((Manga) -> State<Manga>),
+    onClickSourceSettingsClicked: (() -> Unit)?,
     onRelatedMangasScreenClick: () -> Unit,
     onRelatedMangaClick: (Manga) -> Unit,
     onRelatedMangaLongClick: (Manga) -> Unit,
@@ -473,9 +481,11 @@ private fun MangaScreenSmallImpl(
                 onClickEditCategory = onEditCategoryClicked,
                 onClickRefresh = onRefresh,
                 onClickMigrate = onMigrateClicked,
+                onClickEditNotes = onEditNotesClicked,
                 // SY -->
                 onClickEditInfo = onEditInfoClicked.takeIf { state.manga.favorite },
                 // KMK -->
+                onClickSourceSettings = onClickSourceSettingsClicked,
                 onClickRelatedMangas = onRelatedMangasScreenClick.takeIf {
                     !expandRelatedMangas &&
                         showRelatedMangasInOverflow &&
@@ -539,7 +549,10 @@ private fun MangaScreenSmallImpl(
                             },
                         ) { change, dragAmount ->
                             change.consume()
-                            offsetX += dragAmount
+                            val newOffsetX = offsetX + dragAmount
+                            if (!newOffsetX.isNaN()) {
+                                offsetX = newOffsetX
+                            }
                         }
                     },
                 // KMK <--
@@ -668,8 +681,10 @@ private fun MangaScreenSmallImpl(
                             defaultExpandState = state.isFromSource && !state.manga.favorite,
                             description = state.manga.description,
                             tagsProvider = { state.manga.genre },
+                            notes = state.manga.notes,
                             onTagSearch = onTagSearch,
                             onCopyTagToClipboard = onCopyTagToClipboard,
+                            onEditNotes = onEditNotesClicked,
                             // SY -->
                             doSearch = onSearch,
                             searchMetadataChips = remember(state.meta, state.source.id, state.manga.genre) {
@@ -821,6 +836,7 @@ private fun MangaScreenLargeImpl(
     onEditCategoryClicked: (() -> Unit)?,
     onEditIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
+    onEditNotesClicked: () -> Unit,
     // SY -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
@@ -849,6 +865,7 @@ private fun MangaScreenLargeImpl(
 
     // KMK -->
     getMangaState: @Composable ((Manga) -> State<Manga>),
+    onClickSourceSettingsClicked: (() -> Unit)?,
     onRelatedMangasScreenClick: () -> Unit,
     onRelatedMangaClick: (Manga) -> Unit,
     onRelatedMangaLongClick: (Manga) -> Unit,
@@ -917,10 +934,12 @@ private fun MangaScreenLargeImpl(
                 onClickEditCategory = onEditCategoryClicked,
                 onClickRefresh = onRefresh,
                 onClickMigrate = onMigrateClicked,
+                onClickEditNotes = onEditNotesClicked,
                 onCancelActionMode = { onAllChapterSelected(false) },
                 // SY -->
                 onClickEditInfo = onEditInfoClicked.takeIf { state.manga.favorite },
                 // KMK -->
+                onClickSourceSettings = onClickSourceSettingsClicked,
                 onClickRelatedMangas = onRelatedMangasScreenClick.takeIf {
                     !expandRelatedMangas &&
                         showRelatedMangasInOverflow &&
@@ -988,7 +1007,10 @@ private fun MangaScreenLargeImpl(
                             },
                         ) { change, dragAmount ->
                             change.consume()
-                            offsetX += dragAmount
+                            val newOffsetX = offsetX + dragAmount
+                            if (!newOffsetX.isNaN()) {
+                                offsetX = newOffsetX
+                            }
                         }
                     },
                 // KMK <--
@@ -1093,8 +1115,10 @@ private fun MangaScreenLargeImpl(
                             defaultExpandState = true,
                             description = state.manga.description,
                             tagsProvider = { state.manga.genre },
+                            notes = state.manga.notes,
                             onTagSearch = onTagSearch,
                             onCopyTagToClipboard = onCopyTagToClipboard,
+                            onEditNotes = onEditNotesClicked,
                             // SY -->
                             doSearch = onSearch,
                             searchMetadataChips = remember(state.meta, state.source.id, state.manga.genre) {

@@ -20,7 +20,6 @@ import eu.kanade.presentation.components.RadioMenuItem
 import eu.kanade.presentation.components.SearchToolbar
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.Source
-import eu.kanade.tachiyomi.ui.browse.bulkSelectionButton
 import exh.source.anyIs
 import kotlinx.collections.immutable.persistentListOf
 import tachiyomi.domain.library.model.LibraryDisplayMode
@@ -39,7 +38,9 @@ fun BrowseSourceToolbar(
     navigateUp: () -> Unit,
     onWebViewClick: () -> Unit,
     onHelpClick: () -> Unit,
-    onSettingsClick: () -> Unit,
+    // KMK -->
+    onSettingsClick: (() -> Unit)?,
+    // KMK <--
     onSearch: (String) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     // KMK -->
@@ -117,7 +118,9 @@ fun BrowseSourceToolbar(
                             }
                         }
                         // SY <--
-                        if (isConfigurableSource) {
+                        // KMK -->
+                        onSettingsClick?.let {
+                            // KMK <--
                             add(
                                 AppBar.OverflowAction(
                                     title = stringResource(MR.strings.action_settings),

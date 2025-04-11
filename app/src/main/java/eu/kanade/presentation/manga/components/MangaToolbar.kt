@@ -47,6 +47,7 @@ fun MangaToolbar(
     onClickEditCategory: (() -> Unit)?,
     onClickRefresh: () -> Unit,
     onClickMigrate: (() -> Unit)?,
+    onClickEditNotes: () -> Unit,
     // SY -->
     onClickEditInfo: (() -> Unit)?,
     // KMK -->
@@ -55,6 +56,7 @@ fun MangaToolbar(
     onClickRecommend: (() -> Unit)?,
     onClickMerge: (() -> Unit)?,
     onClickMergedSettings: (() -> Unit)?,
+    onClickSourceSettings: (() -> Unit)?,
     // SY <--
 
     // For action mode
@@ -181,6 +183,12 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    add(
+                        AppBar.OverflowAction(
+                            title = stringResource(MR.strings.action_notes),
+                            onClick = onClickEditNotes,
+                        ),
+                    )
                     // SY -->
                     if (onClickMerge != null) {
                         add(
@@ -226,6 +234,14 @@ fun MangaToolbar(
                     }
                     // SY <--
                     // KMK -->
+                    if (onClickSourceSettings != null) {
+                        add(
+                            AppBar.OverflowAction(
+                                title = stringResource(MR.strings.source_settings),
+                                onClick = onClickSourceSettings,
+                            ),
+                        )
+                    }
                     if (isDebugBuildType) {
                         add(
                             AppBar.OverflowAction(

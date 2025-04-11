@@ -26,7 +26,7 @@ android {
         applicationId = "app.komikku"
 
         versionCode = 73
-        versionName = "1.13.0"
+        versionName = "1.13.1"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
@@ -280,7 +280,7 @@ dependencies {
         exclude(group = "androidx.viewpager", module = "viewpager")
     }
     implementation(libs.insetter)
-    implementation(libs.bundles.richtext)
+    implementation(libs.richeditor.compose)
     implementation(libs.aboutLibraries.compose)
     implementation(libs.bundles.voyager)
     implementation(libs.compose.materialmotion)
@@ -288,6 +288,7 @@ dependencies {
     implementation(libs.compose.webview)
     implementation(libs.compose.grid)
     implementation(libs.reorderable)
+    implementation(libs.bundles.markdown)
 
     // KMK -->
     implementation(libs.palette.ktx)
@@ -329,14 +330,6 @@ dependencies {
 }
 
 androidComponents {
-    beforeVariants { variantBuilder ->
-        // Disables standardBenchmark
-        if (variantBuilder.buildType == "benchmark") {
-            variantBuilder.enable = variantBuilder.productFlavors.containsAll(
-                listOf("default" to "dev"),
-            )
-        }
-    }
     onVariants(selector().withFlavor("default" to "standard")) {
         // Only excluding in standard flavor because this breaks
         // Layout Inspector's Compose tree
